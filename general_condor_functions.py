@@ -31,6 +31,10 @@ def getbasic_parser():
                         default='CMSSW_9_3_8',
                         help='cmssw version to be used'
                        )
+    parser.add_argument('-j', '--jdlfilename',
+                        default='run_mg5_condor',
+                        help='name of jdl file and its sh file'
+                       )
     return parser
 
 def create_output_directory(args):
@@ -76,8 +80,8 @@ def make_tarfile(output_filename, source_dir):
         tar.add(source_dir, arcname=os.path.basename(source_dir))
 
 def create_jdl_file_for_condor(args, inputlist, output_log_path):
-    outjdl_file = open("run_mg5_condor.jdl", "w")
-    outjdl_file.write("Executable = run_mg5_condor.sh\n")
+    outjdl_file = open(args.jdlfilename+".jdl", "w")
+    outjdl_file.write("Executable = "+args.jdlfilename+".sh\n")
     outjdl_file.write("Universe = vanilla\n")
     #outjdl_file.write("Requirements =FileSystemDomain==\"fnal.gov\" && Arch==\"X86_64\"")
     outjdl_file.write("Notification = ERROR\n")
@@ -95,7 +99,7 @@ def create_jdl_file_for_condor(args, inputlist, output_log_path):
     outjdl_file.write("Queue\n")
 
 def create_sh_file_for_condor(args, command, output_folder):
-    outscript = open("run_mg5_condor.sh", "w")
+    outscript = open(args.jdlfilename+".sh", "w")
     outscript.write('#!/bin/bash')
     outscript.write("\n"+'echo "Starting job on " `date`')
     outscript.write("\n"+'echo "Running on: `uname -a`"')
@@ -121,4 +125,4 @@ def create_sh_file_for_condor(args, command, output_folder):
     outscript.write("\n"+'rm -rf ' + args.cmsswversion)
     outscript.write("\n")
     outscript.close()
-    os.system("chmod 777 run_mg5_condor.sh")
+    os.system("chmod 777 "+args.jdlfilename+".sh")

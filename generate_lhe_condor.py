@@ -28,7 +28,7 @@ def main():
     print args
 
     # list of input files to be added in jdl file
-    inputlist = "run_mg5_condor.sh"
+    inputlist = args.jdlfilename+".sh"
 
     # command to run
     command = './runcmsgrid.sh '+str(args.nevents)+' '+str(args.randomnumber)+' '+str(args.ncpu)
@@ -41,6 +41,12 @@ def main():
 
     # create the sh file for condor
     create_sh_file_for_condor(args, command, output_folder)
+
+    # running help
+    print "===> Set Proxy Using:"
+    print "\tvoms-proxy-init --voms cms --valid 168:00"
+    print "\"condor_submit "+args.jdlfilename+".jdl\" to submit"
+
 
 if __name__ == "__main__":
     main()
